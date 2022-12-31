@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": "com.georgema001001.waribou",
+        "paths": [
+          "*"
+        ]
+      }
+    ]
+  }
+}

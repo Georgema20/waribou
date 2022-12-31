@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "caribou",
-    "slug": "caribou",
+    "name": "waribou",
+    "slug": "waribou",
+    "plugins": ["@react-native-google-signin/google-signin"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,20 +15,26 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.georgema001001.waribou",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.georgema001001.waribou"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "45bcbbfb-7f5e-4554-b6a4-5c999e241bca"
+      }
     }
   }
 }
