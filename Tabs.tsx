@@ -8,6 +8,9 @@ import Realm from "realm";
 
 
 const Tabs = () => {
+
+    GoogleSignin.configure();
+    
   // Initialize your App.
   const app = new Realm.App({
     id: 'waribou-gqcyn',
