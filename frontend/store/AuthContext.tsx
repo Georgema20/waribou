@@ -3,17 +3,30 @@ import { createContext, useState, useEffect} from "react";
 import { ReactNode } from "react";
 //Importing what we need to store user stuff on the device 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+//Importing google sign in information 
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+//Importing in realms (which is needed for google sign in)
+import Realm from 'realm';
+
+GoogleSignin.configure();
+
+//Initialize your App.
+ const app = new Realm.App({id: 'waribou-gqcyn'});
 
 //Exporting the context // info 
 //Creating it for first time to be used in provider
 
 export const AuthContext = createContext(
-  //default state
-  {uid:'',
+  //Default state
+  {
   isAuthenticated:false, 
 
   //Functions in this context
-  authenticate: (uid:string) =>{}, 
+  authenticate: () =>{}, 
 
   logout: () => {},
 
@@ -30,11 +43,11 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
   useEffect(() => {
     //Get uid to see if anything
     async function fetchToken() {
-      const storedUid = await AsyncStorage.getItem('uid');
+      const isLoggedIn = await AsyncStorage.getItem('loggedIn');
 
       //If found one then set
-      if (storedUid) {
-        setUid(storedUid);
+      if (isLoggedIn) {
+        setLoggedIn(true);
       }
       setLoading(false);
     }
@@ -43,28 +56,59 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
 
   //Manage token is empty bc starts w no token
 
-  const [uid, setUid] = useState<string>('');
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   //Authentication function
-  const authenticate = (uid: string) => {
-    //Setting token
-    setUid(uid);
-    //Store uid in device
-    //Give token and item to store
-    AsyncStorage.setItem('uid', uid);
+  const authenticate = async () => {
+
+
+   const userInfo = await GoogleSignin.signIn().catch((error) => 
+   {
+    if (error.code === statusCodes.SIGN_IN_CANCELLED) 
+     {
+      //User cancelled the login flow
+      console.log('cancelled');
+      return;
+      }
+    });
+    //If no user information was grabbed 
+   if (userInfo == null) 
+    {
+    return;
+    }
+
+   const realm = await Realm.open({});
+
+   //Log the user in to your app
+    const idToken: string = userInfo.idToken!;
+
+    const credentials = await Realm.Credentials.google({ idToken });
+   
+    app.logIn(credentials).then((user) => 
+    {
+    console.log(`Logged in with id: ${user.id}`);
+    });
+
+    //Setting loggedIn state to true 
+    setLoggedIn(true);
+
+    //Store that someone has been logged in 
+    AsyncStorage.setItem('loggedIn', 'true');
   };
 
-  //Log out function which sets the token to null
-  const logout = () => {
-    setUid('');
-    //removing from storage;
-    AsyncStorage.removeItem('uid');
+  //Log out function which sets the log in status to nonexistent 
+  const logout = async () => {
+   
+    await GoogleSignin.signOut().catch((error)=>{console.error(error);});
+
+    setLoggedIn(false);
+    //Removing from storage;
+    AsyncStorage.removeItem('loggedIn');
   };
 
   //Thing that is passed down to everything in provider
   const value = {
-    uid: uid,
-    isAuthenticated: !!uid,
+    isAuthenticated: loggedIn,
     //Pass in functions to be used too
     authenticate: authenticate,
     logout: logout,
