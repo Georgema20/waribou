@@ -26,7 +26,6 @@ const SignUpLogInPage : React.FC  = () => {
 
   //UseEffect -make logged in if already logged in
   useEffect(() => {
-
     if (AuthCtx.isAuthenticated) {
       navigation.navigate('SignedInPage');
     }

@@ -6,7 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 //Importing google sign in information 
 import {
   GoogleSignin,
-  GoogleSigninButton,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 //Importing in realms (which is needed for google sign in)
@@ -15,7 +14,8 @@ import Realm from 'realm';
 GoogleSignin.configure();
 
 //Initialize your App.
- const app = new Realm.App({id: 'waribou-gqcyn'});
+ const realmId = 'waribou-gqcyn';
+ const app = new Realm.App({ id: realmId });
 
 //Exporting the context // info 
 //Creating it for first time to be used in provider
@@ -30,7 +30,9 @@ export const AuthContext = createContext(
 
   logout: () => {},
 
-  loading: true});
+  loading: true,
+
+  uid: ''});
 
 //Place to manage the state and create a wrapper where auth can be accessed 
 
@@ -38,6 +40,7 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
   //Loading or not stage (to prevent weird transition if logged in)
 
   const [loading, setLoading] = useState(true);
+  const [uid, setUid] = useState('');
 
   //When initialized check to see if anything in storage
   useEffect(() => {
@@ -84,9 +87,14 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
 
     const credentials = await Realm.Credentials.google({ idToken });
    
-    app.logIn(credentials).then((user) => 
+    const user = app.logIn(credentials).then( async (user) => 
     {
     console.log(`Logged in with id: ${user.id}`);
+    setUid(user.id);
+    const allProducts = await user.functions.getAllProducts();
+    console.log(allProducts);
+    }).catch((error)=>{
+      console.log(error);
     });
 
     //Setting loggedIn state to true 
@@ -98,12 +106,16 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
 
   //Log out function which sets the log in status to nonexistent 
   const logout = async () => {
-   
-    await GoogleSignin.signOut().catch((error)=>{console.error(error);});
+   setLoggedIn(false);
 
-    setLoggedIn(false);
+    await GoogleSignin.signOut().then(()=>{
+    }).catch((error)=>{console.error(error);});
+
+    setUid('');
     //Removing from storage;
     AsyncStorage.removeItem('loggedIn');
+   
+
   };
 
   //Thing that is passed down to everything in provider
@@ -113,6 +125,8 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
     authenticate: authenticate,
     logout: logout,
     loading: loading,
+    uid: uid,
+    
   };
 
   return (
