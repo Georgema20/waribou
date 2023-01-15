@@ -41,6 +41,7 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
 
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState('');
+  const [user, setUser] = useState({});
 
   //When initialized check to see if anything in storage
   useEffect(() => {
@@ -87,21 +88,43 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
 
     const credentials = await Realm.Credentials.google({ idToken });
    
-    const user = app.logIn(credentials).then( async (user) => 
+    await app.logIn(credentials).then(async (user) => 
     {
     console.log(`Logged in with id: ${user.id}`);
     setUid(user.id);
-    const allProducts = await user.functions.getAllProducts();
-    console.log(allProducts);
+
+    //Find user
+    const waribouUser = await user.functions.findWaribouUser({_id:user.id});
+
+    if(waribouUser==null){
+      //Add user if not added
+      const waribouUser = await user.functions.addWaribouUser({
+        _id: user.id,
+        name: userInfo.user.name,
+        email: userInfo.user.email,
+        photo: userInfo.user.photo,
+      });
+    }
+    else{
+      //If found
+      setUser(waribouUser);
+      console.log(waribouUser);
+    }
+    
+    return user;
     }).catch((error)=>{
       console.log(error);
     });
+
+    
+
 
     //Setting loggedIn state to true 
     setLoggedIn(true);
 
     //Store that someone has been logged in 
     AsyncStorage.setItem('loggedIn', 'true');
+    
   };
 
   //Log out function which sets the log in status to nonexistent 
