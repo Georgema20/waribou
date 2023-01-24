@@ -25,6 +25,8 @@ export const AuthContext = createContext(
   {
   isAuthenticated:false, 
 
+  user: {name:''},
+
   //Functions in this context
   authenticate: () =>{}, 
 
@@ -32,7 +34,7 @@ export const AuthContext = createContext(
 
   loading: true,
 
-  uid: ''});
+  uid: '',});
 
 //Place to manage the state and create a wrapper where auth can be accessed 
 
@@ -41,104 +43,142 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
 
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState('');
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({ name: '' });
+  
+  //Manage token is empty bc starts w no token
+
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   //When initialized check to see if anything in storage
   useEffect(() => {
     //Get uid to see if anything
     async function fetchToken() {
-      const isLoggedIn = await AsyncStorage.getItem('loggedIn');
-
+      const isSignedIn = await GoogleSignin.isSignedIn();
+      console.log(isSignedIn);
       //If found one then set
-      if (isLoggedIn) {
+      if (isSignedIn) {
         setLoggedIn(true);
+        const userInfo = await GoogleSignin.signInSilently();
+        const currentUser = await GoogleSignin.getCurrentUser();
+        console.log(currentUser);
+        //Log the user in to your app
+        const idToken: string = currentUser!.idToken!;
+
+        const credentials = await Realm.Credentials.google({ idToken });
+
+        await app
+          .logIn(credentials)
+          .then(async (user) => {
+            console.log(`Logged in with id: ${user.id}`);
+            setUid(user.id);
+
+            //Find user
+            const waribouUser = await user.functions.findWaribouUser({
+              _id: user.id,
+            });
+
+            //If found
+            setUser(waribouUser);
+            console.log(waribouUser);
+
+            //Store that someone has been logged in
+            AsyncStorage.setItem('id', waribouUser._id);
+
+            return user;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        setLoggedIn(false);
       }
+
       setLoading(false);
     }
+
     fetchToken();
-  });
-
-  //Manage token is empty bc starts w no token
-
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  }, [loggedIn]);
 
   //Authentication function
   const authenticate = async () => {
-
-
-   const userInfo = await GoogleSignin.signIn().catch((error) => 
-   {
-    if (error.code === statusCodes.SIGN_IN_CANCELLED) 
-     {
-      //User cancelled the login flow
-      console.log('cancelled');
-      return;
+    const userInfo = await GoogleSignin.signIn().catch((error) => {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        //User cancelled the login flow
+        console.log('cancelled');
+        return;
       }
     });
-    //If no user information was grabbed 
-   if (userInfo == null) 
-    {
-    return;
+    //If no user information was grabbed
+    if (userInfo == null) {
+      return;
     }
 
-   const realm = await Realm.open({});
+    console.log(userInfo);
 
-   //Log the user in to your app
+    const realm = await Realm.open({});
+
+    //Log the user in to your app
     const idToken: string = userInfo.idToken!;
 
     const credentials = await Realm.Credentials.google({ idToken });
-   
-    await app.logIn(credentials).then(async (user) => 
-    {
-    console.log(`Logged in with id: ${user.id}`);
-    setUid(user.id);
 
-    //Find user
-    const waribouUser = await user.functions.findWaribouUser({_id:user.id});
+    await app
+      .logIn(credentials)
+      .then(async (user) => {
+        console.log(`Logged in with id: ${user.id}`);
+        setUid(user.id);
 
-    if(waribouUser==null){
-      //Add user if not added
-      const waribouUser = await user.functions.addWaribouUser({
-        _id: user.id,
-        name: userInfo.user.name,
-        email: userInfo.user.email,
-        photo: userInfo.user.photo,
+        //Find user
+        const waribouUser = await user.functions.findWaribouUser({
+          _id: user.id,
+        });
+
+        if (waribouUser == null) {
+          //Add user if not added
+          await user.functions.addWaribouUser({
+            _id: user.id,
+            name: userInfo.user.name,
+            email: userInfo.user.email,
+            photo: userInfo.user.photo,
+          });
+
+          const waribouUser = await user.functions.findWaribouUser({
+            _id: user.id,
+          });
+
+          setUser(waribouUser);
+          console.log(waribouUser);
+        } else {
+          //If found
+          setUser(waribouUser);
+          console.log(waribouUser);
+        }
+
+        //Store that someone has been logged in
+        AsyncStorage.setItem('id', waribouUser._id);
+
+        return user;
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }
-    else{
-      //If found
-      setUser(waribouUser);
-      console.log(waribouUser);
-    }
-    
-    return user;
-    }).catch((error)=>{
-      console.log(error);
-    });
 
-    
-
-
-    //Setting loggedIn state to true 
+    //Setting loggedIn state to true
     setLoggedIn(true);
-
-    //Store that someone has been logged in 
-    AsyncStorage.setItem('loggedIn', 'true');
-    
   };
 
-  //Log out function which sets the log in status to nonexistent 
+  //Log out function which sets the log in status to nonexistent
   const logout = async () => {
-   setLoggedIn(false);
-
-    await GoogleSignin.signOut().then(()=>{
-    }).catch((error)=>{console.error(error);});
-
-    setUid('');
+    setLoggedIn(false);
     //Removing from storage;
-    AsyncStorage.removeItem('loggedIn');
-   
+    AsyncStorage.removeItem('id');
+    setUid('');
 
+    await GoogleSignin.signOut()
+      .then(() => {})
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   //Thing that is passed down to everything in provider
@@ -149,7 +189,7 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
     logout: logout,
     loading: loading,
     uid: uid,
-    
+    user: user,
   };
 
   return (
