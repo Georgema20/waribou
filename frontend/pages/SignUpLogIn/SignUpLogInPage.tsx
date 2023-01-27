@@ -3,10 +3,12 @@ import { useContext, useEffect} from 'react';
 import { AuthContext } from '../../store/AuthContext';
 import CenteredContainer from '../../components/CenteredContainer';
 import AppLoading from 'expo-app-loading';
-import GenericButton1 from '../../components/GenericButton1';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation/navigation';
+import {
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
 
 const SignUpLogInPage : React.FC  = () => {
 
@@ -21,6 +23,7 @@ const SignUpLogInPage : React.FC  = () => {
   //Create context
   const AuthCtx = useContext(AuthContext);
 
+
   //UseEffect -make logged in if already logged in
   useEffect(() => {
     if (AuthCtx.isAuthenticated) {
@@ -28,26 +31,13 @@ const SignUpLogInPage : React.FC  = () => {
     }
   });
 
-  //Navigating to pages 
-  const goToSignIn = () => 
-  {
-    navigation.navigate('SignUpPage1');
-  }
-  
-  const goToLogIn = () => 
-  {
-    navigation.navigate('LogInPage');
-  };
-  
-
   return (
     <CenteredContainer>
       {AuthCtx.loading ? (
         <AppLoading />
       ) : (
         <View style={styles.container}>
-          <GenericButton1 onPress={goToSignIn} text="Sign Up" light={false} />
-          <GenericButton1 onPress={goToLogIn} text="Log In" light={true} />
+          <GoogleSigninButton onPress={AuthCtx.authenticate} />
         </View>
       )}
     </CenteredContainer>

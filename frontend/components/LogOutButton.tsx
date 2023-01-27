@@ -19,9 +19,9 @@ const LogOutButton : React.FC = () => {
   const ctx = useContext(AuthContext);
 
   //Log out function
-  function LogOutHandler() {
-    ctx.logout();
-    navigation.navigate('LogInPage');
+  async function LogOutHandler() {
+    await ctx.logout();
+    navigation.navigate('SignUpLogInPage');
   }
 
   return <AvenirText onPress={LogOutHandler} text="Sign Out" />;

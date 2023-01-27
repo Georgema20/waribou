@@ -2,13 +2,18 @@
 import { Text} from "react-native";
 import LogOutButton from "../../components/LogOutButton";
 import CenteredContainer from '../../components/CenteredContainer';
+import { useContext } from "react";
+import { AuthContext } from "../../store/AuthContext";
 
 const SignedInPage = () => {
+
+  const AuthCtx = useContext(AuthContext);
 
 return (
   <CenteredContainer>
     <Text>You Are Signed In</Text>
-    <LogOutButton/>
+    <Text>{AuthCtx.user.name}</Text>
+    <LogOutButton />
   </CenteredContainer>
 );
 }
