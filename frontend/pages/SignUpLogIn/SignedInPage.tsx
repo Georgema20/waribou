@@ -8,7 +8,7 @@ import { AuthContext } from "../../store/AuthContext";
 const SignedInPage = () => {
 
   const AuthCtx = useContext(AuthContext);
-  console.log(AuthCtx.user.name);
+
 return (
   <CenteredContainer>
     <Text>You Are Signed In</Text>

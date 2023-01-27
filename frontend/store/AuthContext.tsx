@@ -24,85 +24,99 @@ export const AuthContext = createContext(
   //Default state
   {
   isAuthenticated:false, 
-
   user: {name:''},
-
+  loading: true,
   //Functions in this context
   authenticate: () =>{}, 
-
   logout: () => {},
-
-  loading: true,
-
-  uid: '',});
+});
 
 //Place to manage the state and create a wrapper where auth can be accessed 
 
 const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
   //Loading or not stage (to prevent weird transition if logged in)
-
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState('');
   const [user, setUser] = useState({ name: '' });
-  
-  //Manage token is empty bc starts w no token
-
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   //When initialized check to see if anything in storage
-  useEffect(() => {
+  useEffect(() => 
+  {
     //Get uid to see if anything
-    async function fetchToken() {
+    async function fetchToken() 
+    {
       const isSignedIn = await GoogleSignin.isSignedIn();
-      console.log(isSignedIn);
+  
       //If found one then set
-      if (isSignedIn) {
+      if (isSignedIn) 
+      {
         setLoggedIn(true);
+        //Sign into whatever is signed in with google 
         const userInfo = await GoogleSignin.signInSilently();
         const currentUser = await GoogleSignin.getCurrentUser();
-        console.log(currentUser);
+       
         //Log the user in to your app
         const idToken: string = currentUser!.idToken!;
+        logInUser(idToken, {name:userInfo.user.name!,email:userInfo.user.email!, photo:userInfo.user.photo!});
 
-        const credentials = await Realm.Credentials.google({ idToken });
-
-        await app
-          .logIn(credentials)
-          .then(async (user) => {
-            console.log(`Logged in with id: ${user.id}`);
-            setUid(user.id);
-
-            //Find user
-            const waribouUser = await user.functions.findWaribouUser({
-              _id: user.id,
-            });
-
-            //If found
-            setUser(waribouUser);
-            console.log(waribouUser);
-
-            //Store that someone has been logged in
-            AsyncStorage.setItem('id', waribouUser._id);
-
-            return user;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
+      } else 
+      {
         setLoggedIn(false);
       }
-
       setLoading(false);
     }
-
     fetchToken();
   }, [loggedIn]);
 
+  const logInUser = async (idToken: string, userInfo : {name: string, email:string, photo:any}) => {
+
+    const credentials = await Realm.Credentials.google({ idToken });
+
+    await app
+      .logIn(credentials)
+      .then(async (user) => 
+      { 
+        setUid(user.id);
+
+        //Find user
+        const waribouUser = await user.functions.findWaribouUser({
+          _id: user.id,
+        });
+
+        //If the user does not exists
+        if (waribouUser == null) 
+        {
+          //Add user if not added
+          await user.functions.addWaribouUser({
+            _id: user.id,
+            name: userInfo.name,
+            email: userInfo.email,
+            photo: userInfo.photo,
+          });
+        }
+
+        //Set the user
+        setUser(waribouUser);
+
+        //Store that someone has been logged in
+        AsyncStorage.setItem('id', waribouUser._id);
+
+        //Setting loggedIn state to true
+        setLoggedIn(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   //Authentication function
-  const authenticate = async () => {
-    const userInfo = await GoogleSignin.signIn().catch((error) => {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+  const authenticate = async () => 
+  {
+    const userInfo = await GoogleSignin.signIn().catch((error) => 
+    {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) 
+      {
         //User cancelled the login flow
         console.log('cancelled');
         return;
@@ -113,62 +127,21 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
       return;
     }
 
-    console.log(userInfo);
-
-    const realm = await Realm.open({});
+    //Open realm 
+    await Realm.open({});
 
     //Log the user in to your app
     const idToken: string = userInfo.idToken!;
-
-    const credentials = await Realm.Credentials.google({ idToken });
-
-    await app
-      .logIn(credentials)
-      .then(async (user) => {
-        console.log(`Logged in with id: ${user.id}`);
-        setUid(user.id);
-
-        //Find user
-        const waribouUser = await user.functions.findWaribouUser({
-          _id: user.id,
-        });
-
-        if (waribouUser == null) {
-          //Add user if not added
-          await user.functions.addWaribouUser({
-            _id: user.id,
-            name: userInfo.user.name,
-            email: userInfo.user.email,
-            photo: userInfo.user.photo,
-          });
-
-          const waribouUser = await user.functions.findWaribouUser({
-            _id: user.id,
-          });
-
-          setUser(waribouUser);
-          console.log(waribouUser);
-        } else {
-          //If found
-          setUser(waribouUser);
-          console.log(waribouUser);
-        }
-
-        //Store that someone has been logged in
-        AsyncStorage.setItem('id', waribouUser._id);
-
-        return user;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    //Setting loggedIn state to true
-    setLoggedIn(true);
+    logInUser(idToken, {
+      name: userInfo.user.name!,
+      email: userInfo.user.email!,
+      photo: userInfo.user.photo!,
+    });
   };
 
   //Log out function which sets the log in status to nonexistent
-  const logout = async () => {
+  const logout = async () => 
+  {
     setLoggedIn(false);
     //Removing from storage;
     AsyncStorage.removeItem('id');
@@ -184,12 +157,11 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
   //Thing that is passed down to everything in provider
   const value = {
     isAuthenticated: loggedIn,
+    loading: loading,
+    user: user,
     //Pass in functions to be used too
     authenticate: authenticate,
     logout: logout,
-    loading: loading,
-    uid: uid,
-    user: user,
   };
 
   return (
