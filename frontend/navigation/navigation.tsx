@@ -10,6 +10,7 @@ import SignUpPage2 from '../pages/SignUpLogIn/SignUpPage2';
 import SignUpPage3 from '../pages/SignUpLogIn/SignUpPage3';
 import SignUpPage4 from '../pages/SignUpLogIn/SignUpPage4';
 import SignUpPage5 from '../pages/SignUpLogIn/SignUpPage5';
+import TripsFeedPage from "../pages/SignUpLogIn/TripsFeedPage";
 
 //Creating type 
  export type RootStackParamList = {
@@ -21,7 +22,8 @@ import SignUpPage5 from '../pages/SignUpLogIn/SignUpPage5';
     SignUpPage2: undefined, 
     SignUpPage3: undefined, 
     SignUpPage4: undefined, 
-    SignUpPage5: undefined
+    SignUpPage5: undefined,
+    TripsFeedPage: undefined,
   };
 
 const Navigation = () =>{
@@ -69,6 +71,11 @@ return (
     <Stack.Screen
       name="SignUpPage5"
       component={SignUpPage5}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="TripsFeedPage"
+      component={TripsFeedPage}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
