@@ -11,6 +11,7 @@ import SignUpPage3 from '../pages/SignUpLogIn/SignUpPage3';
 import SignUpPage4 from '../pages/SignUpLogIn/SignUpPage4';
 import SignUpPage5 from '../pages/SignUpLogIn/SignUpPage5';
 import TripsFeedPage from "../pages/SignUpLogIn/TripsFeedPage";
+import CreateTripPage from "../pages/SignUpLogIn/CreateTripPage";
 
 //Creating type 
  export type RootStackParamList = {
@@ -24,10 +25,12 @@ import TripsFeedPage from "../pages/SignUpLogIn/TripsFeedPage";
     SignUpPage4: undefined, 
     SignUpPage5: undefined,
     TripsFeedPage: undefined,
+    CreateTripPage:undefined
   };
 
 const Navigation = () =>{
 
+  
 //Creating navigator
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -78,8 +81,16 @@ return (
       component={TripsFeedPage}
       options={{ headerShown: false }}
     />
+    <Stack.Screen
+      name="CreateTripPage"
+      component={CreateTripPage}
+      options={{ headerShown: false }}
+    />
   </Stack.Navigator>
 );
 };
 
+
+
 export default Navigation; 
+

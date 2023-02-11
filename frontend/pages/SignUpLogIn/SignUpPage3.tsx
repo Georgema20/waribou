@@ -5,7 +5,7 @@ import { AuthContext } from '../../store/AuthContext';
 import CenteredContainer from '../../components/CenteredContainer';
 import BackButton from '../../components/BackButton';
 import GenericButton1 from '../../components/GenericButton1';
-import UnderlineInput from '../../components/UnderlineInput';
+import DetailInput from '../../components/DetailInput';
 import AvenirText from '../../components/AvenirText';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
@@ -34,7 +34,6 @@ const SignUpPage3 : React.FC = () => {
   };
 
   const goNext = async () => {
-    console.log('checking');
     // const username = SignUpCtx.username;
 
     // if (username == '') {
@@ -66,7 +65,7 @@ const SignUpPage3 : React.FC = () => {
     <CenteredContainer>
       <BackButton onPress={GoBack} />
       <AvenirText style={styles.text} text="Choose a username:" />
-      <UnderlineInput
+      <DetailInput
         placeholderTextColor="rgba(123, 123, 123, 1)"
         value={SignUpCtx.username}
         onChangeText={SignUpCtx.setUsername}

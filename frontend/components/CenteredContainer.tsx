@@ -12,7 +12,6 @@ const CenteredContainer: React.FC<{
     ? (containerStyles = styles.topContainer)
     : (containerStyles = styles.container);
 
-  console.log(props.style);
 
   return (
     <SafeAreaView>

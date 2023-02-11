@@ -1,37 +1,47 @@
-import { View, StyleSheet} from "react-native";
+import { View, StyleSheet, TouchableOpacity} from "react-native";
 import AvenirText from "./AvenirText";
 import { ImageBackground } from "react-native";
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faMugSaucer } from '@fortawesome/free-solid-svg-icons/faMugSaucer';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { trip } from "../../models/models";
 
 
+const TripOverview: React.FC<{ trip: trip }> = (
+  props
+) => {
 
-const TripOverview: React.FC<{}> = (props) => {
-
-  const image = {
-    uri: 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/27/60/ef.jpg',
-  };
-
-  
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container}>
       <ImageBackground
-        source={image}
+        source={{uri:props.trip.uri!}}
         resizeMode="cover"
         style={styles.image}
         imageStyle={{ borderRadius: 20 }}
       >
+        {/* <AvenirText text={props.trip.title!} style={styles.tripName} /> */}
         <View style={styles.tripDetailContainer}>
-          <AvenirText text="Yosemite" style={styles.tripName} />
-          <AvenirText text="June 12 - June 13" style={styles.tripDate} />
-          <AvenirText text="15 people" />
-          <Icon name="calendar-o" size={20} color="black" />
-          <Icon name="users" size={20} color="black" />
+          <View style={styles.iconTextContainer}>
+            <Icon name="map-marker" size={20} color="black" style={{marginLeft:'2%'}}/>
+            <AvenirText
+              text={props.trip.place!}
+              style={styles.tripPlace}
+            />
+          </View>
+          <View style={styles.iconTextContainer}>
+            <Icon name="calendar-o" size={20} color="black" />
+            <AvenirText text={props.trip.date!} style={styles.tripDate} />
+          </View>
+          <View style={styles.iconTextContainer}>
+            <Icon name="users" size={20} color="black" />
+            <AvenirText
+              text={props.trip.size!}
+              style={styles.tripSize}
+            />
+          </View>
         </View>
       </ImageBackground>
-    </View>
-  );}
+    </TouchableOpacity>
+  );
+};
 
   const styles = StyleSheet.create({
     container: {
@@ -42,24 +52,40 @@ const TripOverview: React.FC<{}> = (props) => {
       alignItems: 'center',
     },
     tripDetailContainer: {
-      backgroundColor: 'grey',
+      backgroundColor: '#D3D3D3',
       zIndex: 1,
       borderRadius: 20,
       paddingHorizontal: '5%',
-      opacity: 0.8,
+      opacity: 0.9,
       marginLeft: '4%',
       marginBottom: '4%',
+      paddingVertical: '1%',
     },
-    tripName: {
-      fontWeight: 'bold',
-      fontSize: 18,
-    },
+    // tripName: {
+    //   fontWeight: 'bold',
+    //   fontSize: 18,
+    //   position:'absolute',
+    //   top:'25%',
+    //   left:'%'
+    // },
     tripDate: {
       fontStyle: 'italic',
-      fontSize: 14,
+      fontSize: 12,
+      marginLeft: '4%',
+      fontWeight: 'bold',
+      marginTop: '2%',
     },
     tripSize: {
-      fontSize: 16,
+      fontSize: 12,
+      marginLeft: '4%',
+      fontWeight: 'bold',
+      marginTop: '2%',
+    },
+    tripPlace: {
+      fontSize: 12,
+      marginLeft: '5%',
+      fontWeight: 'bold',
+      marginTop: '2%',
     },
     image: {
       flex: 1,
@@ -67,6 +93,10 @@ const TripOverview: React.FC<{}> = (props) => {
       alignItems: 'flex-start',
       width: '100%',
       height: '100%',
+    },
+    iconTextContainer: {
+      display: 'flex',
+      flexDirection: 'row',
     },
   });
 

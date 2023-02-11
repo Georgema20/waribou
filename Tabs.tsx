@@ -18,8 +18,6 @@ const Tabs = () => {
 
   const signIn = async () => {
     const userInfo = await GoogleSignin.signIn();
-    console.log(userInfo);
-    console.log('hi');
 
     const realm = await Realm.open({
   
@@ -27,13 +25,10 @@ const Tabs = () => {
 
     // Log the user in to your app
     const idToken: string = userInfo.idToken!;
-       console.log(idToken);
        
     const credentials = await Realm.Credentials.google({ idToken });
-        console.log(credentials);
 
     app.logIn(credentials).then((user) => {
-      console.log(`Logged in with id: ${user.id}`);
     });
   };
 

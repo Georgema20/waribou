@@ -6,7 +6,7 @@ import { AuthContext } from '../../store/AuthContext';
 import CenteredContainer from '../../components/CenteredContainer';
 import BackButton from '../../components/BackButton';
 import GenericButton1 from '../../components/GenericButton1';
-import UnderlineInput from '../../components/UnderlineInput';
+import DetailInput from '../../components/DetailInput';
 import AvenirText from '../../components/AvenirText';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
@@ -90,7 +90,7 @@ const SignUpPage5 : React.FC = () => {
     <CenteredContainer>
       <BackButton onPress={GoBack} />
       <AvenirText style={styles.text} text="Last thing: what's your email?" />
-      <UnderlineInput
+      <DetailInput
         placeholderTextColor="rgba(123, 123, 123, 1)"
         value={SignUpCtx.email}
         onChangeText={SignUpCtx.setEmail}
