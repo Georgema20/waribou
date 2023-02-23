@@ -9,6 +9,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import DetailInput from '../../components/DetailInput';
 import { useState } from 'react';
 import { ImageBackground } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+
 
 const CreateTripPage: React.FC = () => {
   //Adds navigation
@@ -23,6 +25,25 @@ const CreateTripPage: React.FC = () => {
   const [place, setPlace] = useState('');
   const [name, setName] = useState('');
   const [budget, setBudget] = useState('');
+
+  //photo
+   const [image, setImage] = useState(null);
+
+const loadLibrary = async () => {
+  // No permissions request is necessary for launching the image library
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+
+  console.log(result);
+
+  if (result.canceled) {
+   console.log('cancelled');
+  }
+}
 
   return (
     <CenteredContainer>
@@ -39,14 +60,16 @@ const CreateTripPage: React.FC = () => {
         >
           <Icon name="chevron-left" size={20} color="black" />
         </TouchableOpacity>
-        <ImageBackground
-          source={{
-            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmhH6s6DXgubR82QoIgDmNlcvvUH9PiPCpSA&usqp=CAU'!,
-          }}
-          resizeMode="cover"
-          style={styles.image}
-          imageStyle={{ borderRadius: 20 }}
-        />
+        <TouchableOpacity onPress={loadLibrary}>
+          <ImageBackground
+            source={{
+              uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmhH6s6DXgubR82QoIgDmNlcvvUH9PiPCpSA&usqp=CAU'!,
+            }}
+            resizeMode="cover"
+            style={styles.image}
+            imageStyle={{ borderRadius: 20 }}
+          />
+        </TouchableOpacity>
         <View style={styles.detailsContainer}>
           <View style={styles.detailContainer}>
             <AvenirText text="Name:" style={styles.detail} />

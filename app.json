@@ -2,7 +2,10 @@
   "expo": {
     "name": "waribou",
     "slug": "waribou",
-    "plugins": ["@react-native-google-signin/google-signin"],
+    "plugins": [["@react-native-google-signin/google-signin" ], ["expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }]],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
