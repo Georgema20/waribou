@@ -27,7 +27,9 @@ const CreateTripPage: React.FC = () => {
   const [budget, setBudget] = useState('');
 
   //photo
-   const [image, setImage] = useState(null);
+   const [image, setImage] = useState<string>(
+     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmhH6s6DXgubR82QoIgDmNlcvvUH9PiPCpSA&usqp=CAU'
+   );
 
 const loadLibrary = async () => {
   // No permissions request is necessary for launching the image library
@@ -38,11 +40,14 @@ const loadLibrary = async () => {
     quality: 1,
   });
 
-  console.log(result);
-
-  if (result.canceled) {
-   console.log('cancelled');
+  if(!result.canceled)
+  {
+    const uri: string | null = result.assets[0].uri;
+    setImage(uri);
   }
+  
+
+  console.log(result);
 }
 
   return (
@@ -60,10 +65,10 @@ const loadLibrary = async () => {
         >
           <Icon name="chevron-left" size={20} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={loadLibrary}>
+        <TouchableOpacity onPress={loadLibrary} style={styles.imageContainer}>
           <ImageBackground
             source={{
-              uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmhH6s6DXgubR82QoIgDmNlcvvUH9PiPCpSA&usqp=CAU'!,
+              uri: image!,
             }}
             resizeMode="cover"
             style={styles.image}
@@ -151,13 +156,11 @@ const styles = StyleSheet.create({
     right: 10,
   },
   image: {
-    marginVertical: '2%',
     height: 220,
     width: 300,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'blue',
-    marginTop: 70,
     borderRadius: 30,
   },
   detailContainer: {
@@ -176,6 +179,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textDecorationLine: 'underline',
+  },
+  imageContainer: {
+    backgroundColor: 'red',
+    marginTop: 70,
+    borderRadius: 30,
   },
 });
 
