@@ -10,6 +10,7 @@ import DetailInput from '../../components/DetailInput';
 import { useState } from 'react';
 import { ImageBackground } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import ParagraphInput from '../../components/ParagraphInput';
 
 
 const CreateTripPage: React.FC = () => {
@@ -25,6 +26,7 @@ const CreateTripPage: React.FC = () => {
   const [place, setPlace] = useState('');
   const [name, setName] = useState('');
   const [budget, setBudget] = useState('');
+  const [description, setDescription] = useState('');
 
   //photo
    const [image, setImage] = useState<string>(
@@ -108,7 +110,7 @@ const loadLibrary = async () => {
           <View style={styles.detailContainer}>
             <AvenirText text="Budget ($):" style={styles.detail} />
             <DetailInput
-              placeholder="50"
+              placeholder="~50"
               placeholderTextColor="grey"
               value={budget}
               onChangeText={setBudget}
@@ -116,11 +118,11 @@ const loadLibrary = async () => {
           </View>
           <View style={styles.detailContainer}>
             <AvenirText text="Description:" style={styles.detail} />
-            <DetailInput
-              placeholder="Seattle, Washington"
+            <ParagraphInput
+              placeholder="Rainy. Pack your rain jackets"
               placeholderTextColor="grey"
-              value={place}
-              onChangeText={setPlace}
+              value={description}
+              onChangeText={setDescription}
             />
           </View>
         </View>
@@ -164,21 +166,23 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   detailContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     width: '100%',
     flexDirection: 'row',
   },
   detailsContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '90%',
-    marginTop: 30,
+    width: '85%',
+    marginTop: 40,
   },
   detail: {
     fontSize: 18,
     fontWeight: 'bold',
     textDecorationLine: 'underline',
+    paddingTop:4, 
+    paddingHorizontal:8
   },
   imageContainer: {
     backgroundColor: 'red',

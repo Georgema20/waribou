@@ -1,6 +1,11 @@
 import { StyleSheet, TextInput, View } from 'react-native';
 
-const DetailInput : React.FC<{placeholder?:string, placeholderTextColor?:string, value:string,onChangeText:(value: string)=> void}> = (props) => {
+const ParagraphInput: React.FC<{
+  placeholder?: string;
+  placeholderTextColor?: string;
+  value: string;
+  onChangeText: (value: string) => void;
+}> = (props) => {
   return (
     <View style={styles.TextInputContainer}>
       <TextInput
@@ -9,6 +14,10 @@ const DetailInput : React.FC<{placeholder?:string, placeholderTextColor?:string,
         value={props.value}
         onChangeText={props.onChangeText}
         style={styles.TextInput}
+        editable={true}
+        maxLength={200}
+        multiline={true}
+        
       />
     </View>
   );
@@ -16,20 +25,17 @@ const DetailInput : React.FC<{placeholder?:string, placeholderTextColor?:string,
 
 const styles = StyleSheet.create({
   TextInputContainer: {
-    width: 190,
-    height: 40,
-    paddingBottom:10,
-    marginBottom:10,
-    padding: 5,
     alignItems: 'flex-start',
-    flexGrow: 1,
+    width: '62%',
   },
   TextInput: {
-    textAlign: 'center',
+    textAlign: 'left',
     fontFamily: 'Avenir',
     fontSize: 18,
     fontStyle: 'italic',
+    maxHeight:200, 
+    width:'100%'
   },
 });
 
-export default DetailInput;
+export default ParagraphInput;
