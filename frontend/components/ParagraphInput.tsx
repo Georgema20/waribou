@@ -26,7 +26,7 @@ const ParagraphInput: React.FC<{
 const styles = StyleSheet.create({
   TextInputContainer: {
     alignItems: 'flex-start',
-    width: '62%',
+    width: '65%',
   },
   TextInput: {
     textAlign: 'left',

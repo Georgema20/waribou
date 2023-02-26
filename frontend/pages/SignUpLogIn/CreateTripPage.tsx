@@ -7,11 +7,12 @@ import AvenirText from '../../components/AvenirText';
 import { StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DetailInput from '../../components/DetailInput';
-import { useState } from 'react';
 import { ImageBackground } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import ParagraphInput from '../../components/ParagraphInput';
-
+import React, { useState, useRef} from 'react';
+import DateInput from '../../components/DateInput';
+import { Text } from 'react-native';
 
 const CreateTripPage: React.FC = () => {
   //Adds navigation
@@ -27,6 +28,8 @@ const CreateTripPage: React.FC = () => {
   const [name, setName] = useState('');
   const [budget, setBudget] = useState('');
   const [description, setDescription] = useState('');
+  const [selectedStartDate, setSelectedStartDate] = useState<Date>(new Date());
+   const [selectedEndDate, setSelectedEndDate] = useState<Date>(new Date());
 
   //photo
    const [image, setImage] = useState<string>(
@@ -47,9 +50,6 @@ const loadLibrary = async () => {
     const uri: string | null = result.assets[0].uri;
     setImage(uri);
   }
-  
-
-  console.log(result);
 }
 
   return (
@@ -100,12 +100,17 @@ const loadLibrary = async () => {
           {/* need to change out the below replace dates and description  */}
           <View style={styles.detailContainer}>
             <AvenirText text="Dates:" style={styles.detail} />
-            <DetailInput
-              placeholder="Seattle, Washington"
-              placeholderTextColor="grey"
-              value={place}
-              onChangeText={setPlace}
-            />
+            <View style={styles.dateContainer}>
+              <DateInput
+                selectedDate={selectedStartDate}
+                onChange={setSelectedStartDate}
+              />
+              <AvenirText text="-" style={styles.date} />
+              <DateInput
+                selectedDate={selectedEndDate}
+                onChange={setSelectedEndDate}
+              />
+            </View>
           </View>
           <View style={styles.detailContainer}>
             <AvenirText text="Budget ($):" style={styles.detail} />
@@ -119,7 +124,7 @@ const loadLibrary = async () => {
           <View style={styles.detailContainer}>
             <AvenirText text="Description:" style={styles.detail} />
             <ParagraphInput
-              placeholder="Rainy. Pack your rain jackets"
+              placeholder="Very rainy. Pack your rain jackets and umbrellas. Expect lots of hikes and good eats!"
               placeholderTextColor="grey"
               value={description}
               onChangeText={setDescription}
@@ -138,8 +143,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D3D3D3',
     position: 'absolute',
     top: 10,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderRadius:30,
     alignItems: 'center',
   },
   ButtonContainer: {
@@ -171,18 +175,30 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
   },
+  dateContainer: {
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexDirection: 'row',
+    width:'70%',
+    height: '100%', 
+    paddingBottom:20, 
+  },
   detailsContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '85%',
-    marginTop: 40,
+    marginTop: 60,
   },
   detail: {
     fontSize: 18,
     fontWeight: 'bold',
     textDecorationLine: 'underline',
-    paddingTop:4, 
-    paddingHorizontal:8
+    paddingTop: 4,
+    paddingHorizontal: 8,
+  },
+  date: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   imageContainer: {
     backgroundColor: 'red',
