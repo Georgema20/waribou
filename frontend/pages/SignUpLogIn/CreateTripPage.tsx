@@ -76,16 +76,28 @@ const CreateTripPage: React.FC = () => {
   const setBudgetFunction = (text:string) => {
        let newText = '';
        let numbers = '0123456789';
+
        for (var i = 0; i < text.length; i++) {
          if (numbers.indexOf(text[i]) > -1) {
-          console.log(numbers.indexOf(text[i]));
            newText = newText + text[i];
          } else {
            // your call back function
          }
        }
-       setBudget(`~${newText}`);
+       setBudget(`${newText}`);
   }
+
+  const formatBudgetFunction = (text:string) => {
+    console.log('hi');
+    const og = text;
+
+    for (var int = text.length; int>3; int = int - 3){
+      text = text.slice(0,int-3) + ',' + text.slice(int-3);
+    }
+  
+    return '~' + text;
+  }
+
 
   return (
     <CenteredContainer>
@@ -152,9 +164,9 @@ const CreateTripPage: React.FC = () => {
             <DetailInput
               placeholder="~50"
               placeholderTextColor="grey"
-              value={budget}
+              value={formatBudgetFunction(budget)}
               onChangeText={(text)=>setBudgetFunction(text)}
-              maxLength={8}
+              maxLength={10}
             />
           </View>
           <View style={styles.detailContainer}>
