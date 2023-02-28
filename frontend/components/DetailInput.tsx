@@ -1,6 +1,6 @@
 import { StyleSheet, TextInput, View } from 'react-native';
 
-const DetailInput : React.FC<{placeholder?:string, placeholderTextColor?:string, value:string,onChangeText:(value: string)=> void}> = (props) => {
+const DetailInput : React.FC<{placeholder?:string, placeholderTextColor?:string, value:string,onChangeText:(value: string)=> void, maxLength?:number}> = (props) => {
   return (
     <View style={styles.TextInputContainer}>
       <TextInput
@@ -9,6 +9,8 @@ const DetailInput : React.FC<{placeholder?:string, placeholderTextColor?:string,
         value={props.value}
         onChangeText={props.onChangeText}
         style={styles.TextInput}
+        maxLength={props.maxLength}
+        
       />
     </View>
   );

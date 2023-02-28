@@ -1,2 +1,2 @@
 
-export interface trip { title: string, date: string, uri:string, size: string, place:string};
+export interface trip { title: string, date: {start: Date, end: Date}, uri:string, size: number, place:string};

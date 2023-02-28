@@ -12,7 +12,8 @@ import * as ImagePicker from 'expo-image-picker';
 import ParagraphInput from '../../components/ParagraphInput';
 import React, { useState, useRef} from 'react';
 import DateInput from '../../components/DateInput';
-import { Text } from 'react-native';
+import { useContext } from 'react';
+import { TripContext } from '../../store/TripContext';
 
 const CreateTripPage: React.FC = () => {
   //Adds navigation
@@ -24,39 +25,73 @@ const CreateTripPage: React.FC = () => {
     navigation.navigate('TripsFeedPage');
   };
 
+  //creating states
   const [place, setPlace] = useState('');
-  const [name, setName] = useState('');
+  const [title, setTitle] = useState('');
   const [budget, setBudget] = useState('');
   const [description, setDescription] = useState('');
   const [selectedStartDate, setSelectedStartDate] = useState<Date>(new Date());
-   const [selectedEndDate, setSelectedEndDate] = useState<Date>(new Date());
+  const [selectedEndDate, setSelectedEndDate] = useState<Date>(new Date());
 
   //photo
-   const [image, setImage] = useState<string>(
-     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmhH6s6DXgubR82QoIgDmNlcvvUH9PiPCpSA&usqp=CAU'
-   );
+  const [image, setImage] = useState<string>(
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmhH6s6DXgubR82QoIgDmNlcvvUH9PiPCpSA&usqp=CAU'
+  );
 
-const loadLibrary = async () => {
-  // No permissions request is necessary for launching the image library
-  let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.All,
-    allowsEditing: true,
-    aspect: [4, 3],
-    quality: 1,
-  });
+  //creating context
+  const TripCtx = useContext(TripContext);
 
-  if(!result.canceled)
-  {
-    const uri: string | null = result.assets[0].uri;
-    setImage(uri);
+  //functions
+
+  const loadLibrary = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const uri: string | null = result.assets[0].uri;
+      setImage(uri);
+    }
+  };
+
+  const createTrip = async () => {
+
+    const trip = {
+      place: place,
+      title: title,
+      date: { start: selectedStartDate, end: selectedEndDate },
+      uri: image,
+      size: 3,
+    };
+
+    await TripCtx.createTrip(trip);
+
+    navigation.navigate('TripsFeedPage');
+  };
+
+  const setBudgetFunction = (text:string) => {
+       let newText = '';
+       let numbers = '0123456789';
+       for (var i = 0; i < text.length; i++) {
+         if (numbers.indexOf(text[i]) > -1) {
+          console.log(numbers.indexOf(text[i]));
+           newText = newText + text[i];
+         } else {
+           // your call back function
+         }
+       }
+       setBudget(`~${newText}`);
   }
-}
 
   return (
     <CenteredContainer>
       <View style={styles.outsideContainer}>
         <TouchableOpacity
-          onPress={navigateTripsFeedPage}
+          onPress={createTrip}
           style={[styles.ButtonContainer, styles.SubmitButton]}
         >
           <Icon name="paper-plane" size={20} color="black" />
@@ -79,12 +114,12 @@ const loadLibrary = async () => {
         </TouchableOpacity>
         <View style={styles.detailsContainer}>
           <View style={styles.detailContainer}>
-            <AvenirText text="Name:" style={styles.detail} />
+            <AvenirText text="Title:" style={styles.detail} />
             <DetailInput
               placeholder="Operation Find McDreamy"
               placeholderTextColor="grey"
-              value={name}
-              onChangeText={setName}
+              value={title}
+              onChangeText={setTitle}
             />
           </View>
           <View style={styles.detailContainer}>
@@ -118,7 +153,8 @@ const loadLibrary = async () => {
               placeholder="~50"
               placeholderTextColor="grey"
               value={budget}
-              onChangeText={setBudget}
+              onChangeText={(text)=>setBudgetFunction(text)}
+              maxLength={8}
             />
           </View>
           <View style={styles.detailContainer}>
@@ -202,7 +238,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     backgroundColor: 'red',
-    marginTop: 70,
+    marginTop: 90,
     borderRadius: 30,
   },
 });

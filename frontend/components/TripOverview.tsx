@@ -28,12 +28,12 @@ const TripOverview: React.FC<{ trip: trip }> = (
           </View>
           <View style={styles.iconTextContainer}>
             <Icon name="calendar-o" size={20} color="black" />
-            <AvenirText text={props.trip.date!} style={styles.tripDate} />
+            <AvenirText text={props.trip.date.start.toDateString()!} style={styles.tripDate} />
           </View>
           <View style={styles.iconTextContainer}>
             <Icon name="users" size={20} color="black" />
             <AvenirText
-              text={props.trip.size!}
+              text={props.trip.size.toString()!}
               style={styles.tripSize}
             />
           </View>
