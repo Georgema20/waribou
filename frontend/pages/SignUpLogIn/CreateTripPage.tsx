@@ -10,7 +10,7 @@ import DetailInput from '../../components/DetailInput';
 import { ImageBackground } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import ParagraphInput from '../../components/ParagraphInput';
-import React, { useState, useRef} from 'react';
+import React, { useState} from 'react';
 import DateInput from '../../components/DateInput';
 import { useContext } from 'react';
 import { TripContext } from '../../store/TripContext';
@@ -46,7 +46,7 @@ const CreateTripPage: React.FC = () => {
   const loadLibrary = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -55,6 +55,19 @@ const CreateTripPage: React.FC = () => {
     if (!result.canceled) {
       const uri: string | null = result.assets[0].uri;
       setImage(uri);
+    }
+  };
+
+  const loadCamera = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchCameraAsync({
+      base64: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const uri: string | undefined = result.uri;
+      setImage(uri!);
     }
   };
 
@@ -114,7 +127,7 @@ const CreateTripPage: React.FC = () => {
         >
           <Icon name="chevron-left" size={20} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={loadLibrary} style={styles.imageContainer}>
+        <View style={styles.imageContainer}>
           <ImageBackground
             source={{
               uri: image!,
@@ -123,7 +136,19 @@ const CreateTripPage: React.FC = () => {
             style={styles.image}
             imageStyle={{ borderRadius: 20 }}
           />
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={loadCamera}
+            style={[styles.ButtonContainer, styles.CameraButton]}
+          >
+            <Icon name="camera-retro" size={20} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={loadLibrary}
+            style={[styles.ButtonContainer, styles.GalleryButton]}
+          >
+            <Icon name="picture-o" size={20} color="black" />
+          </TouchableOpacity>
+        </View>
         <View style={styles.detailsContainer}>
           <View style={styles.detailContainer}>
             <AvenirText text="Title:" style={styles.detail} />
@@ -162,10 +187,10 @@ const CreateTripPage: React.FC = () => {
           <View style={styles.detailContainer}>
             <AvenirText text="Budget ($):" style={styles.detail} />
             <DetailInput
-              placeholder="~50"
               placeholderTextColor="grey"
-              value={formatBudgetFunction(budget)}
-              onChangeText={(text)=>setBudgetFunction(text)}
+              placeholder="~50"
+              value={budget == '' ? budget : formatBudgetFunction(budget)}
+              onChangeText={(text) => setBudgetFunction(text)}
               maxLength={10}
             />
           </View>
@@ -191,7 +216,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D3D3D3',
     position: 'absolute',
     top: 10,
-    borderRadius:30,
+    borderRadius: 30,
     alignItems: 'center',
   },
   ButtonContainer: {
@@ -208,6 +233,14 @@ const styles = StyleSheet.create({
   SubmitButton: {
     top: 10,
     right: 10,
+  },
+  GalleryButton: {
+    bottom: 10,
+    right: 10,
+  },
+  CameraButton: {
+    bottom: 10,
+    left: 15,
   },
   image: {
     height: 220,
@@ -227,9 +260,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     flexDirection: 'row',
-    width:'70%',
-    height: '100%', 
-    paddingBottom:20, 
+    width: '70%',
+    height: '100%',
+    paddingBottom: 20,
   },
   detailsContainer: {
     justifyContent: 'center',

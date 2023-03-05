@@ -93,6 +93,7 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
             name: userInfo.name,
             email: userInfo.email,
             photo: userInfo.photo,
+            trips: []
           });
         }
 

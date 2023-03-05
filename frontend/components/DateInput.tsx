@@ -1,4 +1,3 @@
-
 import { EventEmitter, StyleSheet, TextInput, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useState } from 'react';
@@ -8,7 +7,7 @@ const DateInput: React.FC<{ selectedDate: Date; onChange: (date: Date) => void }
   props
 ) => {
 
-    const setDate = (event: DateTimePickerEvent, date: Date | undefined) => {
+    const setDate = (evient: DateTimePickerEvent, date: Date | undefined) => {
       props.onChange(date!);
     };
 

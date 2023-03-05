@@ -63,13 +63,19 @@ const TripContextProvider: React.FC<{ children: ReactNode }> = (props) => {
        .logIn(credentials)
        .then(async (user) => {
 
+      
         //add trip to trip collection 
-        //add trip id to user trip array 
-          const waribouTrip = await user.functions.createWaribouTrip({
+          let waribouTripObject = await user.functions.createWaribouTrip({
           UserId: user.id,
           trip: trip
           });
-          console.log(waribouTrip);
+
+         const tripId = waribouTripObject.insertedId;
+
+          await user.functions.addWaribouTripToWaribouUserTrips(user.id,tripId)
+       
+        //find user and add it to their array 
+        
        })
        .catch((error) => {
          console.log(error);
