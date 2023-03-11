@@ -14,6 +14,7 @@ import React, { useState} from 'react';
 import DateInput from '../../components/DateInput';
 import { useContext } from 'react';
 import { TripContext } from '../../store/TripContext';
+import { AuthContext } from '../../store/AuthContext';
 
 const CreateTripPage: React.FC = () => {
   //Adds navigation
@@ -40,6 +41,7 @@ const CreateTripPage: React.FC = () => {
 
   //creating context
   const TripCtx = useContext(TripContext);
+  const AuthCtx = useContext(AuthContext);
 
   //functions
 
@@ -79,6 +81,8 @@ const CreateTripPage: React.FC = () => {
       date: { start: selectedStartDate, end: selectedEndDate },
       uri: image,
       size: 3,
+      description:description, 
+      owner: AuthCtx.id
     };
 
     await TripCtx.createTrip(trip);
@@ -101,8 +105,6 @@ const CreateTripPage: React.FC = () => {
   }
 
   const formatBudgetFunction = (text:string) => {
-    console.log('hi');
-    const og = text;
 
     for (var int = text.length; int>3; int = int - 3){
       text = text.slice(0,int-3) + ',' + text.slice(int-3);

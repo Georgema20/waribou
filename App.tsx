@@ -9,13 +9,13 @@ export default function App() {
   
   return (
     <AuthContextProvider>
-      <SignUpContextProvider>
-        <TripContextProvider>
+      <TripContextProvider>
+        <SignUpContextProvider>
           <NavigationContainer>
             <Navigation />
           </NavigationContainer>
-        </TripContextProvider>
-      </SignUpContextProvider>
+        </SignUpContextProvider>
+      </TripContextProvider>
     </AuthContextProvider>
   );
 }
