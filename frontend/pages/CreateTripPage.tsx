@@ -1,20 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation/navigation';
+import { RootStackParamList } from '../navigation/navigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { TouchableOpacity, View } from 'react-native';
-import CenteredContainer from '../../components/CenteredContainer';
-import AvenirText from '../../components/AvenirText';
+import CenteredContainer from '../components/CenteredContainer';
+import AvenirText from '../components/AvenirText';
 import { StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import DetailInput from '../../components/DetailInput';
+import DetailInput from '../components/DetailInput';
 import { ImageBackground } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import ParagraphInput from '../../components/ParagraphInput';
+import ParagraphInput from '../components/ParagraphInput';
 import React, { useState} from 'react';
-import DateInput from '../../components/DateInput';
+import DateInput from '../components/DateInput';
 import { useContext } from 'react';
-import { TripContext } from '../../store/TripContext';
-import { AuthContext } from '../../store/AuthContext';
+import { TripContext } from '../store/TripContext';
+import { AuthContext } from '../store/AuthContext';
 
 const CreateTripPage: React.FC = () => {
   //Adds navigation
@@ -54,7 +54,8 @@ const CreateTripPage: React.FC = () => {
       quality: 1,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled) 
+    {
       const uri: string | null = result.assets[0].uri;
       setImage(uri);
     }
@@ -85,7 +86,7 @@ const CreateTripPage: React.FC = () => {
       owner: AuthCtx.id
     };
 
-    await TripCtx.createTrip(trip);
+    TripCtx.createTrip(trip);
 
     navigation.navigate('TripsFeedPage');
   };
@@ -94,19 +95,21 @@ const CreateTripPage: React.FC = () => {
        let newText = '';
        let numbers = '0123456789';
 
-       for (var i = 0; i < text.length; i++) {
-         if (numbers.indexOf(text[i]) > -1) {
+       for (var i = 0; i < text.length; i++) 
+       {
+         if (numbers.indexOf(text[i]) > -1) 
+         {
            newText = newText + text[i];
-         } else {
-           // your call back function
-         }
+         } 
        }
+
        setBudget(`${newText}`);
   }
 
-  const formatBudgetFunction = (text:string) => {
-
-    for (var int = text.length; int>3; int = int - 3){
+  const formatBudgetFunction = (text:string) => 
+  {
+    for (var int = text.length; int>3; int = int - 3)
+    {
       text = text.slice(0,int-3) + ',' + text.slice(int-3);
     }
   

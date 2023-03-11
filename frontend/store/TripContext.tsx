@@ -2,7 +2,7 @@
 import { createContext, useState, useEffect } from 'react';
 import { ReactNode } from 'react';
 import { trip } from '../../models/models';
-//Importing google sign in information
+//Importing Google sign in information
 import {
   GoogleSignin,
 } from '@react-native-google-signin/google-signin';
@@ -41,61 +41,59 @@ const TripContextProvider: React.FC<{ children: ReactNode }> = (props) => {
   const AuthCtx = useContext(AuthContext);
   //When initialized check to see if anything in storage
   useEffect(() => {
-    console.log('running4');
+  
     setLoading(true);
 
-    async function fetchTokenAndGetTrips() {
+      async function fetchTokenAndGetTrips() 
+      {
+        const isSignedIn = await GoogleSignin.isSignedIn();
+        //If found one then set
+         if (isSignedIn) 
+         {    
 
-      console.log('1');
-      const isSignedIn = await GoogleSignin.isSignedIn();
+          //Sign into whatever is signed in with google
+          await GoogleSignin.signInSilently();
+          const currentUser = await GoogleSignin.getCurrentUser();
 
-      //If found one then set
-      if (isSignedIn) {
-          console.log('2');
-        //Sign into whatever is signed in with google
-        await GoogleSignin.signInSilently();
-          console.log('3');
-        const currentUser = await GoogleSignin.getCurrentUser();
+          //Log the user in to your app
+          const idToken: string = currentUser!.idToken!;
+          
+          //save this idToken 
+          setIdToken(idToken);
 
-        //Log the user in to your app
-        const idToken: string = currentUser!.idToken!;
-     
-        //save this idToken 
-        setIdToken(idToken);
+          const credentials = await Realm.Credentials.google({ idToken });
 
-        const credentials = await Realm.Credentials.google({ idToken });
+          await app
+            .logIn(credentials)
+             .then(async (user) => 
+             {
+              //get user information
+              let waribouUser = await user.functions.findWaribouUser({
+                _id: user.id});
 
-   
-      await app
-    .logIn(credentials)
-    .then(async (user) => {
-      //get user information
-        console.log('7');
-      let waribouUser = await user.functions.findWaribouUser({
-        _id: user.id,
-      });
+              let trips:trip[] = [];
 
-      let trips:trip[] = [];
+              const tripIdArray = waribouUser.trips;
 
-      const tripIdArray = waribouUser.trips;
+                tripIdArray.forEach(async (element:string, i :number, tripIdArray : trip[]) => 
+                {
 
-       tripIdArray.forEach(async (element:string, i :number, tripIdArray : trip[]) => {
-        const trip = await user.functions.findWaribouTrip(element);
-        
-        trips.push(trip.trip);
+                const trip = await user.functions.findWaribouTrip(element);
+                    
+                    trips.push(trip.trip);
 
-        if(i==tripIdArray.length-1){
-          console.log(i);
-          if(tripIdArray.length!=tripsData.length){
-            console.log(trips.length);
-            console.log(tripsData.length);
-            console.log('shoudl hit once');
-         setTripsData(trips);}
-        }
-      });
-   })}}
+                    if(i==tripIdArray.length-1)
+                    {
+                      if(tripIdArray.length!=tripsData.length)
+                      {
+                      setTripsData(trips);
+                      }
+                    }
+                });
+              })
+         }
+    }
 
-    //run functions
     fetchTokenAndGetTrips();
 
     setLoading(false);
@@ -109,25 +107,24 @@ const TripContextProvider: React.FC<{ children: ReactNode }> = (props) => {
        .logIn(credentials)
        .then(async (user) => {
 
-      
-        //add trip to trip collection 
-          let waribouTripObject = await user.functions.createWaribouTrip({
+        //Add trip to trip collection 
+        let waribouTripObject = await user.functions.createWaribouTrip({
           UserId: user.id,
           trip: trip
           });
 
-         const tripId =waribouTripObject.insertedId.toString();
+        const tripId =waribouTripObject.insertedId.toString();
 
         await user.functions.addWaribouTripToWaribouUserTrips(user.id,tripId)
 
-
-        //find user and add it to their array 
+        //Find user and add it to their array 
         
        })
        .catch((error) => {
          console.log(error);
        });
 
+       //Forces useEffect above to run 
        setNeedToReload(!needToReload);
   };
 

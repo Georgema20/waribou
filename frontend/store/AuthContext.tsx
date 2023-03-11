@@ -47,7 +47,6 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
     //Get uid to see if anything
     async function fetchToken() 
     {
-      console.log('wtf1')
       const isSignedIn = await GoogleSignin.isSignedIn();
   
       //If found one then set
@@ -57,19 +56,19 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
         //Sign into whatever is signed in with google 
         const userInfo = await GoogleSignin.signInSilently();
         const currentUser = await GoogleSignin.getCurrentUser();
-         console.log('wtf2');
+
         //Log the user in to your app
         const idToken: string = currentUser!.idToken!;
         logInUser(idToken, {name:userInfo.user.name!,email:userInfo.user.email!, photo:userInfo.user.photo!});
- console.log('wtf3');
-      } else 
+
+      } 
+      else 
       {
         setLoggedIn(false);
       }
       setLoading(false);
     }
 
-    console.log('hit');
     fetchToken();
   }, [loggedIn]);
 
@@ -108,7 +107,6 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
 
         //Setting loggedIn state to true
         setLoggedIn(true);
-         console.log('wtf4');
       })
       .catch((error) => {
         console.log(error);

@@ -12,8 +12,7 @@ const TripOverview: React.FC<{ trip: trip }> = (
 ) => {
 
   const AuthCtx = useContext(AuthContext);
-  console.log(AuthCtx.id);
-  console.log(props.trip.owner);
+
   return (
     <TouchableOpacity style={styles.container}>
      <View style={styles.crownContainer}>

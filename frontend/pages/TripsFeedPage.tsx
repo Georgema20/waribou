@@ -1,13 +1,13 @@
 import React from "react";
 import { FlatList, StyleSheet, SafeAreaView,TouchableOpacity, ListRenderItemInfo} from "react-native";
-import AvenirText from "../../components/AvenirText";
-import TripOverview from "../../components/TripOverview";
+import AvenirText from "../components/AvenirText";
+import TripOverview from "../components/TripOverview";
 import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation/navigation';
+import { RootStackParamList } from '../navigation/navigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useContext } from "react";
-import { TripContext } from "../../store/TripContext";
-import { trip } from "../../../models/models";
+import { TripContext } from "../store/TripContext";
+import { trip } from "../../models/models";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const TripsFeedPage : React.FC  = () => {

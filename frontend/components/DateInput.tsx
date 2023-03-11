@@ -17,7 +17,7 @@ const DateInput: React.FC<{ selectedDate: Date; onChange: (date: Date) => void }
       <DateTimePicker
         display="compact"
         value={props.selectedDate}
-        maximumDate={new Date()}
+        minimumDate={new Date()}
         onChange={setDate}
         style={styles.picker}
       />
