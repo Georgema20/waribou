@@ -26,6 +26,7 @@ export const AuthContext = createContext(
   isAuthenticated:false, 
   user: {name:''},
   loading: true,
+  id:'',
   //Functions in this context
   authenticate: () =>{}, 
   logout: () => {},
@@ -55,24 +56,25 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
         //Sign into whatever is signed in with google 
         const userInfo = await GoogleSignin.signInSilently();
         const currentUser = await GoogleSignin.getCurrentUser();
-       
+
         //Log the user in to your app
         const idToken: string = currentUser!.idToken!;
         logInUser(idToken, {name:userInfo.user.name!,email:userInfo.user.email!, photo:userInfo.user.photo!});
 
-      } else 
+      } 
+      else 
       {
         setLoggedIn(false);
       }
       setLoading(false);
     }
+
     fetchToken();
   }, [loggedIn]);
 
   const logInUser = async (idToken: string, userInfo : {name: string, email:string, photo:any}) => {
 
     const credentials = await Realm.Credentials.google({ idToken });
-
     await app
       .logIn(credentials)
       .then(async (user) => 
@@ -93,6 +95,7 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
             name: userInfo.name,
             email: userInfo.email,
             photo: userInfo.photo,
+            trips: []
           });
         }
 
@@ -159,6 +162,7 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = (props) => {
     isAuthenticated: loggedIn,
     loading: loading,
     user: user,
+    id: uid,
     //Pass in functions to be used too
     authenticate: authenticate,
     logout: logout,

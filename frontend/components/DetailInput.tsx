@@ -1,6 +1,6 @@
 import { StyleSheet, TextInput, View } from 'react-native';
 
-const UnderlineInput : React.FC<{placeholder?:string, placeholderTextColor?:string, value:string,onChangeText:(value: string)=> void}> = (props) => {
+const DetailInput : React.FC<{placeholder?:string, placeholderTextColor?:string, value:string,onChangeText:(value: string)=> void, maxLength?:number}> = (props) => {
   return (
     <View style={styles.TextInputContainer}>
       <TextInput
@@ -9,6 +9,8 @@ const UnderlineInput : React.FC<{placeholder?:string, placeholderTextColor?:stri
         value={props.value}
         onChangeText={props.onChangeText}
         style={styles.TextInput}
+        maxLength={props.maxLength}
+        
       />
     </View>
   );
@@ -16,18 +18,20 @@ const UnderlineInput : React.FC<{placeholder?:string, placeholderTextColor?:stri
 
 const styles = StyleSheet.create({
   TextInputContainer: {
-    width: 280,
-    height: 30,
-    margin: 15,
+    width: 190,
+    height: 40,
+    paddingBottom:10,
+    marginBottom:10,
     padding: 5,
-    justifyContent: 'center',
-    borderBottomWidth: 1,
+    alignItems: 'flex-start',
+    flexGrow: 1,
   },
   TextInput: {
     textAlign: 'center',
     fontFamily: 'Avenir',
     fontSize: 18,
+    fontStyle: 'italic',
   },
 });
 
-export default UnderlineInput;
+export default DetailInput;
