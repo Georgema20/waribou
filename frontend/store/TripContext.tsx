@@ -35,7 +35,7 @@ const TripContextProvider: React.FC<{ children: ReactNode }> = (props) => {
   //States 
   const [idToken, setIdToken] = useState('');
   const [tripsData, setTripsData] = useState<Array<trip>>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [needToReload, setNeedToReload] = useState(false);
 
   const AuthCtx = useContext(AuthContext);

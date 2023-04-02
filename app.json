@@ -24,7 +24,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.georgema001001.waribou",
+      "bundleIdentifier": "com.georgimama111.waribou",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
@@ -32,7 +32,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.georgema001001.waribou"
+      "package": "com.georgimama111.waribou"
     },
     "web": {
       "favicon": "./assets/favicon.png"

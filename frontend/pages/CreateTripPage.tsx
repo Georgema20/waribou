@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/navigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { TouchableOpacity, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import CenteredContainer from '../components/CenteredContainer';
 import AvenirText from '../components/AvenirText';
 import { StyleSheet } from 'react-native';
@@ -15,6 +15,8 @@ import DateInput from '../components/DateInput';
 import { useContext } from 'react';
 import { TripContext } from '../store/TripContext';
 import { AuthContext } from '../store/AuthContext';
+import PeopleCircles from '../components/PeopleCircles';
+import NavigationBar from '../components/NavigationBar';
 
 const CreateTripPage: React.FC = () => {
   //Adds navigation
@@ -33,6 +35,7 @@ const CreateTripPage: React.FC = () => {
   const [description, setDescription] = useState('');
   const [selectedStartDate, setSelectedStartDate] = useState<Date>(new Date());
   const [selectedEndDate, setSelectedEndDate] = useState<Date>(new Date());
+   const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
   //photo
   const [image, setImage] = useState<string>(
@@ -62,8 +65,10 @@ const CreateTripPage: React.FC = () => {
   };
 
   const loadCamera = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchCameraAsync({
+
+      await requestPermission();
+    
+      let result = await ImagePicker.launchCameraAsync({
       base64: true,
       quality: 1,
     });
@@ -76,15 +81,47 @@ const CreateTripPage: React.FC = () => {
 
   const createTrip = async () => {
 
-    const trip = {
-      place: place,
-      title: title,
-      date: { start: selectedStartDate, end: selectedEndDate },
-      uri: image,
-      size: 3,
-      description:description, 
-      owner: AuthCtx.id
-    };
+
+    if(title.trim().length == 0)
+    {
+      console.log('no title');
+      return;
+    }
+
+    if (place.trim().length == 0) 
+    {
+      console.log('no place');
+      return;
+    }
+
+    if (budget.trim().length == 0) 
+    {
+     console.log('no budget');
+      return;
+     }
+
+     if (description.trim().length == 0) 
+     {
+       console.log('no description');
+       return;
+     }
+
+     if (
+       image ==
+       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmhH6s6DXgubR82QoIgDmNlcvvUH9PiPCpSA&usqp=CAU'
+    ){
+       console.log('no image');
+       return;
+    }
+       const trip = {
+         place: place,
+         title: title,
+         date: { start: selectedStartDate, end: selectedEndDate },
+         uri: image,
+         size: 3,
+         description: description,
+         owner: AuthCtx.id,
+       };
 
     TripCtx.createTrip(trip);
 
@@ -113,13 +150,16 @@ const CreateTripPage: React.FC = () => {
       text = text.slice(0,int-3) + ',' + text.slice(int-3);
     }
   
-    return '~' + text;
+    return '~$' + text;
   }
 
 
   return (
     <CenteredContainer>
-      <View style={styles.outsideContainer}>
+      <ScrollView
+        contentContainerStyle={{ alignItems: 'center' }}
+        style={styles.outsideContainer}
+      >
         <TouchableOpacity
           onPress={createTrip}
           style={[styles.ButtonContainer, styles.SubmitButton]}
@@ -208,8 +248,26 @@ const CreateTripPage: React.FC = () => {
               onChangeText={setDescription}
             />
           </View>
+          <View style={styles.detailContainer}>
+            <AvenirText text="People:" style={styles.detail} />
+          </View>
+          <View style={styles.peopleContainer}>
+            <PeopleCircles uri={'https://reactnative.dev/img/tiny_logo.png'} />
+            <PeopleCircles uri={'https://reactnative.dev/img/tiny_logo.png'} />
+            <PeopleCircles uri={'https://reactnative.dev/img/tiny_logo.png'} />
+            <TouchableOpacity style={styles.addTripCornerButtonContainer}>
+              <AvenirText text="+" style={styles.addTripButtonText} />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+        <TouchableOpacity
+          style={styles.addTripBottomButtonContainer}
+          onPress={createTrip}
+        >
+          <Icon name="paper-plane" size={20} color="black" />
+        </TouchableOpacity>
+      </ScrollView>
+      <NavigationBar />
     </CenteredContainer>
   );
 };
@@ -217,12 +275,10 @@ const CreateTripPage: React.FC = () => {
 const styles = StyleSheet.create({
   outsideContainer: {
     width: '90%',
-    height: '100%',
+    height: '800%',
     backgroundColor: '#D3D3D3',
-    position: 'absolute',
-    top: 10,
     borderRadius: 30,
-    alignItems: 'center',
+    flex: 1,
   },
   ButtonContainer: {
     backgroundColor: 'white',
@@ -261,6 +317,15 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
   },
+  peopleContainer: {
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '100%',
+    flexDirection: 'row',
+    marginTop: 20,
+    marginLeft: 5,
+    paddingBottom:10
+  },
   dateContainer: {
     justifyContent: 'space-evenly',
     alignItems: 'center',
@@ -288,8 +353,26 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     backgroundColor: 'red',
-    marginTop: 90,
+    marginTop: 80,
     borderRadius: 30,
+  },
+  addTripCornerButtonContainer: {
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
+    borderRadius: 25,
+  },
+  addTripButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+  addTripBottomButtonContainer: {
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    width: '85%',
+    alignItems: 'center',
+    marginVertical: 20,
+    padding:10
   },
 });
 

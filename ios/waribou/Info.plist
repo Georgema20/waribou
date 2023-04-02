@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Give Waribou persion to access your microphone</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Give Waribou permission to access camera</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Give Waribou permission to save photos </string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Waribou is asking for permission to access your photos</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -33,7 +25,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.georgema001001.waribou</string>
+				<string>com.georgimama111.waribou</string>
 			</array>
 		</dict>
 		<dict>
@@ -66,6 +58,14 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Give Waribou permission to access camera</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Give Waribou persion to access your microphone</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Waribou is asking for permission to access your photos</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Give Waribou permission to save photos </string>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

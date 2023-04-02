@@ -5,12 +5,16 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUpLogInPage from '../pages/SignUpLogInPage';
 import TripsFeedPage from "../pages/TripsFeedPage";
 import CreateTripPage from "../pages/CreateTripPage";
+import SearchPage from "../pages/SearchPage";
+import ProfilePage from "../pages/ProfilePage";
 
 //Creating type 
  export type RootStackParamList = {
     SignUpLogInPage: undefined,
     TripsFeedPage: undefined,
-    CreateTripPage:undefined
+    CreateTripPage:undefined,
+    SearchPage: undefined,
+    ProfilePage: undefined
   };
 
 const Navigation = () =>{
@@ -34,6 +38,16 @@ return (
     <Stack.Screen
       name="CreateTripPage"
       component={CreateTripPage}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="SearchPage"
+      component={SearchPage}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="ProfilePage"
+      component={ProfilePage}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

@@ -9,6 +9,8 @@ import { useContext } from "react";
 import { TripContext } from "../store/TripContext";
 import { trip } from "../../models/models";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import NavigationBar from "../components/NavigationBar";
+import { Text, View} from "react-native";
 
 const TripsFeedPage : React.FC  = () => {
   //Adds navigation
@@ -25,6 +27,34 @@ const TripsFeedPage : React.FC  = () => {
   //useEffect set the data. if data not set it loading. 
     //only way to make it run again is if data changes 
     //need to keep data I think in the trips context 
+   console.log(TripCtx.loading);
+
+   let feed = null;
+
+   if(TripCtx.loading == true){
+    feed = (
+      <View style={styles.loadingOrAddContainer}>
+        <Text style={styles.loadingOrAddText}>Loading...</Text>
+      </View>
+    );
+   }
+
+   else if(TripCtx.tripsData.length == 0){
+    feed = (
+      <View style={styles.loadingOrAddContainer}>
+        <Text style={styles.loadingOrAddText}>Add a trip...</Text>
+      </View>
+    );
+   }
+
+   else{
+    feed = <FlatList
+          data={TripCtx.tripsData}
+          renderItem={(item: ListRenderItemInfo<trip>) => {
+            return <TripOverview trip={item.item} />;
+          }}
+        />
+   }
 
   return (
     <SafeAreaView style={{ flex: 1, alignItems: 'center' }}>
@@ -41,20 +71,14 @@ const TripsFeedPage : React.FC  = () => {
       >
         <Icon name="minus" size={16} color="black" />
       </TouchableOpacity>
-
-      <FlatList
-        data={TripCtx.tripsData}
-        renderItem={(item: ListRenderItemInfo<trip>) => {
-          const test = item.item;
-          return <TripOverview trip={item.item} />;
-        }}
-      />
+     {feed}
       <TouchableOpacity
         style={styles.addTripBottomButtonContainer}
         onPress={navigateToCreateTripPage}
       >
         <AvenirText text="+" style={styles.addTripButtonText} />
       </TouchableOpacity>
+      <NavigationBar />
     </SafeAreaView>
   );
 };
@@ -63,7 +87,7 @@ const styles = StyleSheet.create({
   headers: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
     textDecorationLine: 'underline',
   },
   addTripCornerButtonContainer: {
@@ -84,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '80%',
     alignItems: 'center',
-    marginTop: 10,
+    marginVertical:20
   },
   subtractTripCornerButtonContainer: {
     position: 'absolute',
@@ -95,6 +119,15 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     borderRadius: 10,
   },
+  loadingOrAddContainer:{
+    justifyContent:'center',
+    alignItems:'center', 
+    flex:1, 
+  },
+   loadingOrAddText:{
+    fontWeight:'bold',
+    fontSize:50
+   }
 });
 
 export default TripsFeedPage;

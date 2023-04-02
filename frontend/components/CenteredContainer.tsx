@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center', 
   },
   topContainer: {
     height: '100%',

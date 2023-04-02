@@ -58,7 +58,7 @@ const TripOverview: React.FC<{ trip: trip }> = (
   const styles = StyleSheet.create({
     container: {
       marginVertical: '2%',
-      height: 200,
+      height: 182,
       width: 330,
       justifyContent: 'center',
       alignItems: 'center',
@@ -73,13 +73,6 @@ const TripOverview: React.FC<{ trip: trip }> = (
       marginBottom: '4%',
       paddingVertical: '1%',
     },
-    // tripName: {
-    //   fontWeight: 'bold',
-    //   fontSize: 18,
-    //   position:'absolute',
-    //   top:'25%',
-    //   left:'%'
-    // },
     tripDate: {
       fontStyle: 'italic',
       fontSize: 12,
